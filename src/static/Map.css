@@ -1,0 +1,54 @@
+.iframe-container {
+    overflow: hidden;
+    /* 16:9 aspect ratio */
+    padding-top: 56.25%;
+    position: relative;
+}
+
+.iframe-container iframe {
+    border: 0;
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+
+
+.map-title {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    color: #281414;
+    z-index: 10;
+    margin: 0;
+    padding: 0;
+  }
+
+.kml-info-window-title {
+    padding: 0;
+    margin: 0;
+}
+
+.kml-info-window-body {
+    margin-top: 0;
+}
+
+.activity-title {
+    display: inline;
+    margin: 0;
+    padding: 0;
+}
+
+.image-container {
+    display: flex;
+    justify-content: center;
+}
+
+.marker-description {
+    margin-top: 5px;
+}
+
+.strava-link {
+    margin-top: 5px;
+}
