@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const ROUTESURL_REST_API_URL = 'http://localhost:8080/api/routes'
+const ROUTESURL_REST_API_URL = process.env.REACT_APP_SUMMER_OF_JAKE_SERVER_END_POINT + "/api/routes";
 
 class RouteURLService {
     getRoutes = async () => {

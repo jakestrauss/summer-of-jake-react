@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "-": "^0.0.1",
     "@google-cloud/storage": "^5.15.4",
     "@react-google-maps/api": "^2.5.0",
     "@testing-library/jest-dom": "^5.11.4",
@@ -14,17 +15,21 @@
     "@types/react-dom": "^17.0.0",
     "axios": "^0.24.0",
     "dayjs": "^1.10.7",
+    "env-cmd": "^10.1.0",
     "gapi": "^0.0.3",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-gapi": "^1.0.1",
     "react-scripts": "4.0.3",
+    "save-dev": "^0.0.1-security",
     "typescript": "^4.1.2",
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "env-cmd -f ./environments/.dev.env react-scripts start",
+    "build": "env-cmd -f ./environments/.dev.env npm run-script build",
+    "start:prod": "env-cmd -f ./environments/.prod.env react-scripts start",
+    "build:prod": "env-cmd -f ./environments/.prod.env run-script start",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
