@@ -28,7 +28,7 @@ class MarkerService {
         })
         return finalResponse;
         } catch (err) {
-            console.error("Markers call error");
+            console.error("Markers call error: " + err.message);
         }
     }
 }

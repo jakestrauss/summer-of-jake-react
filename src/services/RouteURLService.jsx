@@ -15,7 +15,7 @@ class RouteURLService {
         })
         return finalResponse;
         } catch (err) {
-            console.error("Routes call error");
+            console.error("Routes call error " + err.message);
         }
     }
 }
