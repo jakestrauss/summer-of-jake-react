@@ -19,7 +19,8 @@ const center = {
 const mapOptions = {
     styles: mapStyles,
     disableDefaultUI: true,
-    zoomControl: true
+    zoomControl: true,
+    gestureHandling: "greedy"
 };
 const hardCodedKmlOptions = {
     suppressInfoWindows: true
