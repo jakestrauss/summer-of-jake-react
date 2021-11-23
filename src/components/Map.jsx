@@ -13,8 +13,8 @@ const mapContainerStyle = {
     height: '100vh'
 };
 const center = {
-    lat: 40.644366,
-    lng: -39.872822
+    lat: 38.614374,
+    lng: -99.111854
 };
 const mapOptions = {
     styles: mapStyles,
@@ -23,7 +23,8 @@ const mapOptions = {
     gestureHandling: "greedy"
 };
 const hardCodedKmlOptions = {
-    suppressInfoWindows: true
+    suppressInfoWindows: true,
+    preserveViewport: true
 };
 const kmlInfoWindowOptions = {
     maxWidth: 500
@@ -116,7 +117,7 @@ export default function Map() {
     return (
         <div>
             <h1 className="map-title">Summer of Jake</h1>
-            <GoogleMap mapContainerStyle={mapContainerStyle} zoom={3} center={center} options={mapOptions} onClick={mapClick}>
+            <GoogleMap mapContainerStyle={mapContainerStyle} zoom={5} center={center} options={mapOptions} onClick={mapClick}>
                 {
                     routes.map(route => (<KmlLayer url={route} options={hardCodedKmlOptions} key={`kmlLayer-${route}`}/>
                 ))}

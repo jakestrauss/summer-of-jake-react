@@ -18,7 +18,7 @@
 .map-title {
     position: absolute;
     top: 1rem;
-    left: 1rem;
+    right: 2rem;
     color: #281414;
     z-index: 10;
     margin: 0;
