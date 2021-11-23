@@ -5,6 +5,7 @@ const ROUTESURL_REST_API_URL = process.env.REACT_APP_SUMMER_OF_JAKE_SERVER_END_P
 class RouteURLService {
     getRoutes = async () => {
         try {
+            axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
             var finalResponse = await axios.get(ROUTESURL_REST_API_URL).then((response) => {
                 const routeData = response.data;
                 var routeUrls = [];

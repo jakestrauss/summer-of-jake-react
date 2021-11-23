@@ -5,6 +5,7 @@ const MARKERS_REST_API_URL = process.env.REACT_APP_SUMMER_OF_JAKE_SERVER_END_POI
 class MarkerService {
     getMarkers = async () => {
         try {
+            axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
             var finalResponse = await axios.get(MARKERS_REST_API_URL).then((response) => {
                 const markersData = response.data;
                 var markers = [];
