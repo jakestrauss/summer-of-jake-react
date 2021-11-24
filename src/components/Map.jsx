@@ -36,6 +36,7 @@ export default function Map() {
     });
 
     //State variables
+    const [infoWindowDisplayed, setInfoWindowDisplayed] = useState(false);
     const [selectedMarker, setSelectedMarker] = useState(null);
     const [routes, setRoutes] = useState([]);
     const [markers, setMarkers] = useState([]);
@@ -219,10 +220,10 @@ export default function Map() {
 
                         return(
                             <>
-                                <Marker position={marker.latLong} icon={localIcon} key={`marker-${marker.latLong}`} onClick={() => setSelectedMarker(marker)}>
+                                <Marker position={marker.latLong} icon={localIcon} key={`marker-${marker.latLong}`} onClick={() => {mapClick(); setSelectedMarker(marker);}}>
                                 </Marker>
                                 {selectedMarker === marker
-                                    && <InfoWindow key={`infoWindow-${marker.latLong}`} visible={false} position={marker.latLong} onCloseClick={() => setSelectedMarker(null)}>
+                                    && <InfoWindow key={`infoWindow-${marker.latLong}`} visible={false} position={marker.latLong} onCloseClick={() => {setSelectedMarker(null)}}>
                                         <div>
                                             <div className="image-container">
                                                 <img style={imgStyle} src={marker.url} alt="Marker"></img>
