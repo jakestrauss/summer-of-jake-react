@@ -1,4 +1,4 @@
-import React, {useCallback, useRef, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import '../static/Map.css';
 import { GoogleMap, KmlLayer, Marker, InfoWindow, useJsApiLoader } from '@react-google-maps/api';
 import mapStyles from './../mapStyles';
@@ -36,7 +36,6 @@ export default function Map() {
     });
 
     //State variables
-    const [infoWindowDisplayed, setInfoWindowDisplayed] = useState(false);
     const [selectedMarker, setSelectedMarker] = useState(null);
     const [routes, setRoutes] = useState([]);
     const [markers, setMarkers] = useState([]);
@@ -108,32 +107,48 @@ export default function Map() {
 
     if (loadError)
         return (<>Error loading maps</>);
-    if (!isLoaded || !routes || routes.length == 0)
+    if (!isLoaded || !routes || routes.length === 0)
         return (<>Loading maps</>);
+    
+    const onMapLoad = (map) => {
+        const infowindow = new window.google.maps.InfoWindow({});
 
-        const infowindow = new window.google.maps.InfoWindow({
-            content: "<div>hello</div>"
-          });
-    
-        const onMapLoad = (map) => {
-            routes.map(route => {
-                map.data.loadGeoJson(route.url);
+        routes.map(route => {
+            map.data.loadGeoJson(route.url);
+        });
+
+        map.data.setStyle({
+            strokeColor: 'cornflowerBlue',
+            strokeOpacity: 0.8
             });
+
+        map.data.addListener("click", (event)  => {
+            // const dateStamp = dayjs(event.feature.getProperty('date')).format('MM/DD/YYYY');
+            // console.log(dateStamp);
+            // const content = dateStamp;
+            
+            infowindow.setPosition(event.latLng);
+            infowindow.setContent(createInfoWindowContent(event.feature));
+            infowindow.open({
+                map,
+                shouldFocus: true
+                });
+        });
+
+    };
+    const createInfoWindowContent = (routeObject) => {
+        var content = document.createElement("div");
+        content.appendChild(document.createElement("h1"));
+        content.appendChild(document.createTextNode(routeObject.getProperty('activity_title')));
+        content.appendChild(document.createElement("p"));
+        content.appendChild(document.createTextNode(dayjs(routeObject.getProperty('date')).format('MM/DD/YYYY')));
+        content.appendChild(document.createElement("p"));
+        content.appendChild(document.createTextNode(routeObject.getProperty('activity_description')));
     
-            map.data.setStyle({
-                strokeColor: 'cornflowerBlue',
-                strokeOpacity: 0.8
-              });
-    
-            map.data.addListener("click", (mapsMouseEvent)  => {
-                infowindow.open({
-                    position: mapsMouseEvent.latLng,
-                    map,
-                    shouldFocus: true,
-                  });
-            });
-    
-        };
+
+        return(content.outerHTML);
+    };
+
     const markerSize = new window.google.maps.Size(20, 20);
 
     return (
