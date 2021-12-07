@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useRef, useEffect, useState} from 'react';
 import '../static/Map.css';
 import { GoogleMap, KmlLayer, Marker, InfoWindow, useJsApiLoader } from '@react-google-maps/api';
 import mapStyles from './../mapStyles';
@@ -53,7 +53,6 @@ export default function Map() {
     const [fall21Window, setFall21Window] = useState(false);
     const [fall21WindowPos, setFall21WindowPos] = useState({ lat: -25.363, lng: 131.044 });
     
-
     //Click events
     const fall19Click = (mapsMouseEvent) => {
         mapClick();
@@ -102,26 +101,45 @@ export default function Map() {
         setSelectedMarker(null);
     }
 
-
     useEffect(() => {
-        RouteURLService.getRoutes().then(result => setRoutes(result));
         MarkerService.getMarkers().then(result => setMarkers(result));
+        RouteURLService.getRoutes().then(result => setRoutes(result));
     }, []);
 
     if (loadError)
         return (<>Error loading maps</>);
-    if (!isLoaded || !routes)
+    if (!isLoaded || !routes || routes.length == 0)
         return (<>Loading maps</>);
+
+        const infowindow = new window.google.maps.InfoWindow({
+            content: "<div>hello</div>"
+          });
     
+        const onMapLoad = (map) => {
+            routes.map(route => {
+                map.data.loadGeoJson(route.url);
+            });
+    
+            map.data.setStyle({
+                strokeColor: 'cornflowerBlue',
+                strokeOpacity: 0.8
+              });
+    
+            map.data.addListener("click", (mapsMouseEvent)  => {
+                infowindow.open({
+                    position: mapsMouseEvent.latLng,
+                    map,
+                    shouldFocus: true,
+                  });
+            });
+    
+        };
     const markerSize = new window.google.maps.Size(20, 20);
 
     return (
         <div>
             <h1 className="map-title">Summer of Jake</h1>
-            <GoogleMap mapContainerStyle={mapContainerStyle} zoom={5} center={center} options={mapOptions} onClick={mapClick}>
-                {
-                    routes.map(route => (<KmlLayer url={route} options={hardCodedKmlOptions} key={`kmlLayer-${route}`}/>
-                ))}
+            <GoogleMap mapContainerStyle={mapContainerStyle} zoom={5} center={center} options={mapOptions} onClick={mapClick} onLoad={onMapLoad}>
                 <>
                 <KmlLayer key={`fall19Kml`} url="https://storage.googleapis.com/strava-kmls/2019_road_trip_15.kmz" options={hardCodedKmlOptions} onClick={fall19Click} />
                 {
@@ -202,7 +220,6 @@ export default function Map() {
                         </div>
                         </InfoWindow>
                 }
-                
                 {
                     markers.map(marker => {
                         const localIcon = {
