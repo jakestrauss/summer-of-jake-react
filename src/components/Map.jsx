@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from 'react';
+import { renderToString } from 'react-dom/server'
 import '../static/Map.css';
-import { GoogleMap, KmlLayer, Marker, InfoWindow, useJsApiLoader } from '@react-google-maps/api';
+import { GoogleMap, KmlLayer, InfoWindow, useJsApiLoader } from '@react-google-maps/api';
 import mapStyles from './../mapStyles';
 import RouteURLService from '../services/RouteURLService';
 import MarkerService from '../services/MarkerService';
-
-const dayjs = require('dayjs');
+import RouteInfoWindow from '../components/RouteInfoWindow';
+import PhotoMarker from './PhotoMarker';
 
 //Map Constants
 const mapContainerStyle = {
@@ -114,7 +115,7 @@ export default function Map() {
         const infowindow = new window.google.maps.InfoWindow({});
 
         routes.map(route => {
-            map.data.loadGeoJson(route.url);
+            return map.data.loadGeoJson(route.url);
         });
 
         map.data.setStyle({
@@ -123,33 +124,19 @@ export default function Map() {
             });
 
         map.data.addListener("click", (event)  => {
-            // const dateStamp = dayjs(event.feature.getProperty('date')).format('MM/DD/YYYY');
-            // console.log(dateStamp);
-            // const content = dateStamp;
-            
+            setSelectedMarker(null);
             infowindow.setPosition(event.latLng);
-            infowindow.setContent(createInfoWindowContent(event.feature));
+            infowindow.setContent(renderToString(RouteInfoWindow(event.feature)));
             infowindow.open({
                 map,
                 shouldFocus: true
                 });
         });
+        map.addListener("click", (event) => {
+            infowindow.close();
+        })
 
     };
-    const createInfoWindowContent = (routeObject) => {
-        var content = document.createElement("div");
-        content.appendChild(document.createElement("h1"));
-        content.appendChild(document.createTextNode(routeObject.getProperty('activity_title')));
-        content.appendChild(document.createElement("p"));
-        content.appendChild(document.createTextNode(dayjs(routeObject.getProperty('date')).format('MM/DD/YYYY')));
-        content.appendChild(document.createElement("p"));
-        content.appendChild(document.createTextNode(routeObject.getProperty('activity_description')));
-    
-
-        return(content.outerHTML);
-    };
-
-    const markerSize = new window.google.maps.Size(20, 20);
 
     return (
         <div>
@@ -237,42 +224,7 @@ export default function Map() {
                 }
                 {
                     markers.map(marker => {
-                        const localIcon = {
-                            url: marker.url,
-                            scaledSize: markerSize
-                        };
-                        const imgStyle = {
-                            maxHeight: `50%`,
-                            maxWidth: `100%`,
-                            width: `90%`,
-                            objectFit: `contain`
-                        };
-                        const stravaUrl = "https://strava.com/activities/" + marker.activityId;
-                        const dateToDisplay = dayjs(marker.activityDate);
-
-                        return(
-                            <>
-                                <Marker position={marker.latLong} icon={localIcon} key={`marker-${marker.latLong}`} onClick={() => {mapClick(); setSelectedMarker(marker);}}>
-                                </Marker>
-                                {selectedMarker === marker
-                                    && <InfoWindow key={`infoWindow-${marker.latLong}`} visible={false} position={marker.latLong} onCloseClick={() => {setSelectedMarker(null)}}>
-                                        <div>
-                                            <div className="image-container">
-                                                <img style={imgStyle} src={marker.url} alt="Marker"></img>
-                                            </div>
-                                            <h2 className="activity-title">{dateToDisplay.format('MM/DD/YYYY')}: {marker.activityTitle}</h2>
-                                            <div className = "marker-description">{marker.activityDescription}
-                                            <br></br>
-                                            <div className="strava-link">
-                                                <a className="strava-link" href={stravaUrl} target="_blank">View on Strava</a>
-                                            </div>
-                                            
-                                            </div>
-                                        </div>
-                                    </InfoWindow>
-                                }
-                            </>   
-                        )
+                        return <PhotoMarker key={`photoMarker-${marker.url}`} marker={marker} selectedMarker={selectedMarker} setSelectedMarker={setSelectedMarker} mapClick={mapClick} onChange={setSelectedMarker}/>;
                     })
                 }
             </GoogleMap>

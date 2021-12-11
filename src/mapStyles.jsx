@@ -1,5 +1,5 @@
 //"Nature" theme from Snazzy Maps: https://snazzymaps.com/style/47/nature
-export default [
+var mapStyles = [
     {
         "featureType": "landscape",
         "stylers": [
@@ -103,3 +103,4 @@ export default [
         ]
     }
 ];
+export default mapStyles;

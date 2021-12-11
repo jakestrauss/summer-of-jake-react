@@ -23,7 +23,6 @@ class RouteURLService {
                         activityDate: localActivityDate
                     };
                 }
-                console.log(routes);
                 return routes; 
         })
         return finalResponse;
