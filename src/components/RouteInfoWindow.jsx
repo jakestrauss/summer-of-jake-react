@@ -1,5 +1,5 @@
 import React from 'react';
-import '../static/RouteInfoWindow.css';
+import '../static/css/RouteInfoWindow.css';
 const dayjs = require('dayjs');
 
 export default function RouteInfoWindow(routeObject) {

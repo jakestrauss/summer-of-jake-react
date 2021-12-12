@@ -1,12 +1,17 @@
 import React, {useEffect, useState} from 'react';
 import { renderToString } from 'react-dom/server'
-import '../static/Map.css';
+import '../static/css/Map.css';
 import { GoogleMap, KmlLayer, InfoWindow, useJsApiLoader } from '@react-google-maps/api';
-import mapStyles from './../mapStyles';
+import mapStyles from '../static/mapStyles';
 import RouteURLService from '../services/RouteURLService';
 import MarkerService from '../services/MarkerService';
-import RouteInfoWindow from '../components/RouteInfoWindow';
+import RouteInfoWindow from './RouteInfoWindow';
+import checkboxBooleans from '../static/checkboxBooleans';
+import Checklist from './Checklist';
 import PhotoMarker from './PhotoMarker';
+const dayjs = require('dayjs');
+const isBetween = require('dayjs/plugin/isBetween');
+dayjs.extend(isBetween);
 
 //Map Constants
 const mapContainerStyle = {
@@ -32,11 +37,14 @@ const kmlInfoWindowOptions = {
 }
 
 export default function Map() {
+    const mapRef = React.useRef();
     const { isLoaded, loadError } = useJsApiLoader({
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY || ""
     });
 
     //State variables
+    const [checkedItems, setCheckedItems] = useState(checkboxBooleans);
+    const [stravaDateRange, setStravaDateRange] = useState({ start: dayjs(0), end: dayjs() });
     const [selectedMarker, setSelectedMarker] = useState(null);
     const [routes, setRoutes] = useState([]);
     const [markers, setMarkers] = useState([]);
@@ -118,10 +126,20 @@ export default function Map() {
             return map.data.loadGeoJson(route.url);
         });
 
-        map.data.setStyle({
-            strokeColor: 'cornflowerBlue',
-            strokeOpacity: 0.8
+        if(checkedItems['strava-activities']) {
+            map.data.setStyle( (feature) => {
+                var toDisplay = dayjs(feature.getProperty('date')).isBetween(stravaDateRange['start'], stravaDateRange['end']);
+                return {
+                    visible: toDisplay,
+                    strokeColor: 'cornflowerBlue',
+                    strokeOpacity: 0.8
+                }
             });
+        } else {
+            map.data.setStyle({
+                visible: false
+            });
+        }
 
         map.data.addListener("click", (event)  => {
             setSelectedMarker(null);
@@ -134,31 +152,41 @@ export default function Map() {
         });
         map.addListener("click", (event) => {
             infowindow.close();
-        })
+        });
 
+        mapRef.current=map;
     };
 
     return (
         <div>
             <h1 className="map-title">Summer of Jake</h1>
+            <Checklist checkedItems={checkedItems} setCheckedItems={setCheckedItems} map={mapRef.current} stravaDateRange={stravaDateRange} setStravaDateRange={setStravaDateRange} />
             <GoogleMap mapContainerStyle={mapContainerStyle} zoom={5} center={center} options={mapOptions} onClick={mapClick} onLoad={onMapLoad}>
                 <>
-                <KmlLayer key={`fall19Kml`} url="https://storage.googleapis.com/strava-kmls/2019_road_trip_15.kmz" options={hardCodedKmlOptions} onClick={fall19Click} />
                 {
-                    fall19Window
-                    && <InfoWindow key={`fall19InfoWindow`} visible={false} onCloseClick={fall19Close} options={kmlInfoWindowOptions} position={fall19WindowPos}>
-                        <div>
-                            <h2 className="kml-info-window-title">2019 Road Trip: The Long Way to Seattle</h2>
-                            <p className="kml-info-window-body">The summer after I graduated college, I lived out of my Rav4 for 3 months and took my sweet time moving out to Seattle to start my first "real" job.</p>
-                            <div class="iframe-container" position="relative" width="100%" height="100%" padding-bottom="56.25%">
-                                <iframe src="https://www.youtube.com/embed/1ZjSy4kVV0w" position="absolute" top="0" left="0" width="100%" height="100%" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen>
-                                </iframe>
-                            </div>
-                        </div>
-                        </InfoWindow>
+                    checkedItems['road-trips']
+                    &&
+                    <KmlLayer key={`fall19Kml`} url="https://storage.googleapis.com/strava-kmls/2019_road_trip_15.kmz" options={hardCodedKmlOptions} onClick={fall19Click} />
                 }
+                    {
+                        fall19Window
+                        && <InfoWindow key={`fall19InfoWindow`} visible={false} onCloseClick={fall19Close} options={kmlInfoWindowOptions} position={fall19WindowPos}>
+                            <div>
+                                <h2 className="kml-info-window-title">2019 Road Trip: The Long Way to Seattle</h2>
+                                <p className="kml-info-window-body">The summer after I graduated college, I lived out of my Rav4 for 3 months and took my sweet time moving out to Seattle to start my first "real" job.</p>
+                                <div className="iframe-container" position="relative" width="100%" height="100%" padding-bottom="56.25%">
+                                    <iframe src="https://www.youtube.com/embed/1ZjSy4kVV0w" position="absolute" top="0" left="0" width="100%" height="100%" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen>
+                                    </iframe>
+                                </div>
+                            </div>
+                            </InfoWindow>
+                    }
 
-                <KmlLayer key={`PCT_pt_1`} url="https://storage.googleapis.com/strava-kmls/PCT_pt_1.kmz" options={hardCodedKmlOptions} onClick={pctOneClick} />
+                {   
+                    checkedItems['road-trips']
+                    &&
+                    <KmlLayer key={`PCT_pt_1`} url="https://storage.googleapis.com/strava-kmls/PCT_pt_1.kmz" options={hardCodedKmlOptions} onClick={pctOneClick} />
+                }
                 {
                     pctOneWindow
                     && <InfoWindow key={`pctInfoWindowOne`} visible={false} onCloseClick={pctOneClose} options={kmlInfoWindowOptions} position={pctOneWindowPos}>
@@ -172,7 +200,12 @@ export default function Map() {
                         </div>
                         </InfoWindow>
                 }
-                <KmlLayer key={`PCT_pt_2`} url="https://storage.googleapis.com/strava-kmls/PCT_pt_2.kmz" options={hardCodedKmlOptions} onClick={pctTwoClick} />
+
+                {
+                    checkedItems['road-trips']
+                    &&
+                    <KmlLayer key={`PCT_pt_2`} url="https://storage.googleapis.com/strava-kmls/PCT_pt_2.kmz" options={hardCodedKmlOptions} onClick={pctTwoClick} />
+                }
                 {
                     pctTwoWindow
                     && <InfoWindow key={`pctInfoWindowTwo`} visible={false} onCloseClick={pctTwoClose} options={kmlInfoWindowOptions} position={pctTwoWindowPos}>
@@ -188,7 +221,11 @@ export default function Map() {
                 }
                 </>
 
-                <KmlLayer key={`Tahoe_Rim_Trail`} url="https://storage.googleapis.com/strava-kmls/Tahoe_Rim_Trail_1.kmz" options={hardCodedKmlOptions} onClick={trtClick} />
+                {
+                    checkedItems['road-trips']
+                    &&
+                    <KmlLayer key={`Tahoe_Rim_Trail`} url="https://storage.googleapis.com/strava-kmls/Tahoe_Rim_Trail_1.kmz" options={hardCodedKmlOptions} onClick={trtClick} />
+                }
                 {
                     trtWindow
                     && <InfoWindow key={`trtInfoWindow`} visible={false} onCloseClick={trtClose} options={kmlInfoWindowOptions} position={trtWindowPos}>
@@ -199,7 +236,11 @@ export default function Map() {
                         </InfoWindow>
                 }
 
-                <KmlLayer key={`spring21`} url="https://storage.googleapis.com/strava-kmls/2021_spring_road_trip_10.kmz" options={hardCodedKmlOptions} onClick={spring21Click} />
+                {
+                    checkedItems['road-trips']
+                    &&
+                    <KmlLayer key={`spring21`} url="https://storage.googleapis.com/strava-kmls/2021_spring_road_trip_10.kmz" options={hardCodedKmlOptions} onClick={spring21Click} />
+                }
                 {
                     spring21Window
                     && <InfoWindow key={`spring21Window`} visible={false} onCloseClick={spring21Close} options={kmlInfoWindowOptions} position={spring21WindowPos}>
@@ -211,7 +252,11 @@ export default function Map() {
                         </InfoWindow>
                 }
 
-                <KmlLayer key={`fall21`} url="https://storage.googleapis.com/strava-kmls/2021_fall_road_trip_4.kmz" options={hardCodedKmlOptions} onClick={fall21Click} />
+                {
+                    checkedItems['road-trips']
+                    &&
+                    <KmlLayer key={`fall21`} url="https://storage.googleapis.com/strava-kmls/2021_fall_road_trip_4.kmz" options={hardCodedKmlOptions} onClick={fall21Click} />
+                }
                 {
                     fall21Window
                     && <InfoWindow key={`fall21Window`} visible={false} onCloseClick={fall21Close} options={kmlInfoWindowOptions} position={fall21WindowPos}>
@@ -223,6 +268,8 @@ export default function Map() {
                         </InfoWindow>
                 }
                 {
+                    checkedItems['strava-activities']
+                    &&
                     markers.map(marker => {
                         return <PhotoMarker key={`photoMarker-${marker.url}`} marker={marker} selectedMarker={selectedMarker} setSelectedMarker={setSelectedMarker} mapClick={mapClick} onChange={setSelectedMarker}/>;
                     })
