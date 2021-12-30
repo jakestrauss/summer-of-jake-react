@@ -7,6 +7,7 @@ import RouteURLService from '../services/RouteURLService';
 import MarkerService from '../services/MarkerService';
 import RouteInfoWindow from './RouteInfoWindow';
 import checkboxBooleans from '../static/checkboxBooleans';
+import initialStravaDateSet from '../static/initialStravaDateSet';
 import Checklist from './Checklist';
 import PhotoMarker from './PhotoMarker';
 const dayjs = require('dayjs');
@@ -44,7 +45,7 @@ export default function Map() {
 
     //State variables
     const [checkedItems, setCheckedItems] = useState(checkboxBooleans);
-    const [stravaDateRange, setStravaDateRange] = useState({ start: dayjs(0), end: dayjs() });
+    const [stravaDateArray, setStravaDateArray] = useState(initialStravaDateSet);
     const [selectedMarker, setSelectedMarker] = useState(null);
     const [routes, setRoutes] = useState([]);
     const [markers, setMarkers] = useState([]);
@@ -126,19 +127,28 @@ export default function Map() {
             return map.data.loadGeoJson(route.url);
         });
 
-        if(checkedItems['strava-activities']) {
-            map.data.setStyle( (feature) => {
-                var toDisplay = dayjs(feature.getProperty('date')).isBetween(stravaDateRange['start'], stravaDateRange['end']);
-                return {
-                    visible: toDisplay,
-                    strokeColor: 'cornflowerBlue',
-                    strokeOpacity: 0.8
-                }
-            });
-        } else {
-            map.data.setStyle({
-                visible: false
-            });
+        if(map) {
+            if(checkedItems['strava-activities']) {
+                map.data.setStyle( (feature) => {
+                    var toDisplay = false;
+                    for(let monthDate of stravaDateArray) {
+                        if(dayjs(feature.getProperty('date')).isSame(monthDate, 'month')) {
+                         toDisplay = true;
+                            break;
+                        }
+                    }
+                    
+                    return {
+                        visible: toDisplay,
+                        strokeColor: 'cornflowerBlue',
+                        strokeOpacity: 0.8
+                    }
+                });
+            } else {
+                map.data.setStyle({
+                    visible: false
+                });
+            }
         }
 
         map.data.addListener("click", (event)  => {
@@ -160,7 +170,7 @@ export default function Map() {
     return (
         <div>
             <h1 className="map-title">Summer of Jake</h1>
-            <Checklist checkedItems={checkedItems} setCheckedItems={setCheckedItems} map={mapRef.current} stravaDateRange={stravaDateRange} setStravaDateRange={setStravaDateRange} />
+            <Checklist checkedItems={checkedItems} setCheckedItems={setCheckedItems} map={mapRef.current} stravaDateArray={stravaDateArray} setStravaDateArray={setStravaDateArray}/>
             <GoogleMap mapContainerStyle={mapContainerStyle} zoom={5} center={center} options={mapOptions} onClick={mapClick} onLoad={onMapLoad}>
                 <>
                 {

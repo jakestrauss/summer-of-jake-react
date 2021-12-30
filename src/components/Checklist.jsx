@@ -5,18 +5,24 @@ const dayjs = require('dayjs');
 const isBetween = require('dayjs/plugin/isBetween');
 dayjs.extend(isBetween);
 
-export default function Checklist({checkedItems, setCheckedItems, map, stravaDateRange, setStravaDateRange}) {
+export default function Checklist({checkedItems, setCheckedItems, map, stravaDateArray, setStravaDateArray, updateStravaRoutes}) {
     const handleChange = (event) => {
         setCheckedItems({...checkedItems, [event.target.name] : event.target.checked });
     }
     
 
     useEffect(() => {
-        console.log("checkedItems: ", checkedItems);
         if(map) {
             if(checkedItems['strava-activities']) {
                 map.data.setStyle( (feature) => {
-                    var toDisplay = dayjs(feature.getProperty('date')).isBetween(stravaDateRange['start'], stravaDateRange['end']);
+                    var toDisplay = false;
+                    for(let monthDate of stravaDateArray) {
+                        if(dayjs(feature.getProperty('date')).isSame(monthDate, 'month')) {
+                         toDisplay = true;
+                            break;
+                        }
+                    }
+                    
                     return {
                         visible: toDisplay,
                         strokeColor: 'cornflowerBlue',
@@ -29,7 +35,7 @@ export default function Checklist({checkedItems, setCheckedItems, map, stravaDat
                 });
             }
         }
-    }, [map, checkedItems, stravaDateRange]);  
+    }, [map, checkedItems, stravaDateArray]);  
 
 
     return (
