@@ -1,53 +1,25 @@
+import CheckboxTree from 'react-checkbox-tree';
 import React, {useEffect, useState} from 'react';
-import Checkbox from '../components/Checkbox';
-import checkboxValueList from '../static/checkboxValueList';
-const dayjs = require('dayjs');
-const isBetween = require('dayjs/plugin/isBetween');
-dayjs.extend(isBetween);
 
-export default function Checklist({checkedItems, setCheckedItems, map, stravaDateArray, setStravaDateArray, updateStravaRoutes}) {
-    const handleChange = (event) => {
-        setCheckedItems({...checkedItems, [event.target.name] : event.target.checked });
-    }
-    
+const nodes = [{
+    value: 'road-trips',
+    label: 'Road Trips',
+    children: [
+        { value: '2019-summer', label: 'Summer 2019' },
+        { value: '2021-spring', label: 'Spring 2021' },
+        { value: '2021-fall', label: 'Fall 2021' }
+    ],
+}];
 
-    useEffect(() => {
-        if(map) {
-            if(checkedItems['strava-activities']) {
-                map.data.setStyle( (feature) => {
-                    var toDisplay = false;
-                    for(let monthDate of stravaDateArray) {
-                        if(dayjs(feature.getProperty('date')).isSame(monthDate, 'month')) {
-                         toDisplay = true;
-                            break;
-                        }
-                    }
-                    
-                    return {
-                        visible: toDisplay,
-                        strokeColor: 'cornflowerBlue',
-                        strokeOpacity: 0.8
-                    }
-                });
-            } else {
-                map.data.setStyle({
-                    visible: false
-                });
-            }
-        }
-    }, [map, checkedItems, stravaDateArray]);  
-
+export default function Checklist ({checked, setChecked, checkboxValueList, expanded, setExpanded, map, stravaDateArray, setStravaDateArray, updateStravaRoutes}) {
 
     return (
-        <div>
-            {
-                checkboxValueList.map(item => (
-                    <label key={item.key}>
-                        {item.name}
-                        <Checkbox name={item.name} checked={checkedItems[item.name]} onChange={handleChange} />
-                    </label>
-                ))
-            }
-        </div>
+        <CheckboxTree
+            nodes={checkboxValueList}
+            checked={checked}
+            expanded={expanded}
+            onCheck={currentChecked => setChecked(currentChecked)}
+            onExpand={currentExpanded => setExpanded(currentExpanded)}
+        />
     );
 }

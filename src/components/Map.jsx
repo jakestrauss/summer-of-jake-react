@@ -10,6 +10,8 @@ import checkboxBooleans from '../static/checkboxBooleans';
 import initialStravaDateSet from '../static/initialStravaDateSet';
 import Checklist from './Checklist';
 import PhotoMarker from './PhotoMarker';
+import checkboxValueList from '../static/checkboxValueList';
+
 const dayjs = require('dayjs');
 const isBetween = require('dayjs/plugin/isBetween');
 dayjs.extend(isBetween);
@@ -44,7 +46,8 @@ export default function Map() {
     });
 
     //State variables
-    const [checkedItems, setCheckedItems] = useState(checkboxBooleans);
+    const [checked, setChecked] = useState(checkboxBooleans);
+    const [expanded, setExpanded] = useState([]);
     const [stravaDateArray, setStravaDateArray] = useState(initialStravaDateSet);
     const [selectedMarker, setSelectedMarker] = useState(null);
     const [routes, setRoutes] = useState([]);
@@ -128,7 +131,7 @@ export default function Map() {
         });
 
         if(map) {
-            if(checkedItems['strava-activities']) {
+            if(checked['strava-activities']) {
                 map.data.setStyle( (feature) => {
                     var toDisplay = false;
                     for(let monthDate of stravaDateArray) {
@@ -165,16 +168,17 @@ export default function Map() {
         });
 
         mapRef.current=map;
+        console.log(checked);
     };
 
     return (
         <div>
             <h1 className="map-title">Summer of Jake</h1>
-            <Checklist checkedItems={checkedItems} setCheckedItems={setCheckedItems} map={mapRef.current} stravaDateArray={stravaDateArray} setStravaDateArray={setStravaDateArray}/>
+            <Checklist checkboxValueList={checkboxValueList} checked={checked} setChecked={setChecked} expanded={expanded} setExpanded={setExpanded} checkboxBooleans={checkboxBooleans} map={mapRef.current} stravaDateArray={stravaDateArray} setStravaDateArray={setStravaDateArray}/>
             <GoogleMap mapContainerStyle={mapContainerStyle} zoom={5} center={center} options={mapOptions} onClick={mapClick} onLoad={onMapLoad}>
                 <>
                 {
-                    checkedItems['road-trips']
+                    checked.includes('2019-summer')
                     &&
                     <KmlLayer key={`fall19Kml`} url="https://storage.googleapis.com/strava-kmls/2019_road_trip_15.kmz" options={hardCodedKmlOptions} onClick={fall19Click} />
                 }
@@ -193,7 +197,7 @@ export default function Map() {
                     }
 
                 {   
-                    checkedItems['road-trips']
+                    checked.includes('pct')
                     &&
                     <KmlLayer key={`PCT_pt_1`} url="https://storage.googleapis.com/strava-kmls/PCT_pt_1.kmz" options={hardCodedKmlOptions} onClick={pctOneClick} />
                 }
@@ -212,7 +216,7 @@ export default function Map() {
                 }
 
                 {
-                    checkedItems['road-trips']
+                    checked.includes('pct')
                     &&
                     <KmlLayer key={`PCT_pt_2`} url="https://storage.googleapis.com/strava-kmls/PCT_pt_2.kmz" options={hardCodedKmlOptions} onClick={pctTwoClick} />
                 }
@@ -232,7 +236,7 @@ export default function Map() {
                 </>
 
                 {
-                    checkedItems['road-trips']
+                    checked.includes('trt')
                     &&
                     <KmlLayer key={`Tahoe_Rim_Trail`} url="https://storage.googleapis.com/strava-kmls/Tahoe_Rim_Trail_1.kmz" options={hardCodedKmlOptions} onClick={trtClick} />
                 }
@@ -247,7 +251,7 @@ export default function Map() {
                 }
 
                 {
-                    checkedItems['road-trips']
+                    checked.includes('2021-spring')
                     &&
                     <KmlLayer key={`spring21`} url="https://storage.googleapis.com/strava-kmls/2021_spring_road_trip_10.kmz" options={hardCodedKmlOptions} onClick={spring21Click} />
                 }
@@ -263,7 +267,7 @@ export default function Map() {
                 }
 
                 {
-                    checkedItems['road-trips']
+                    checked.includes('2021-fall')
                     &&
                     <KmlLayer key={`fall21`} url="https://storage.googleapis.com/strava-kmls/2021_fall_road_trip_4.kmz" options={hardCodedKmlOptions} onClick={fall21Click} />
                 }
@@ -278,7 +282,7 @@ export default function Map() {
                         </InfoWindow>
                 }
                 {
-                    checkedItems['strava-activities']
+                    checked.includes('strava-activities')
                     &&
                     markers.map(marker => {
                         return <PhotoMarker key={`photoMarker-${marker.url}`} marker={marker} selectedMarker={selectedMarker} setSelectedMarker={setSelectedMarker} mapClick={mapClick} onChange={setSelectedMarker}/>;
