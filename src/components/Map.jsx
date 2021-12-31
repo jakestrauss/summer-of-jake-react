@@ -52,6 +52,7 @@ export default function Map() {
     const [selectedMarker, setSelectedMarker] = useState(null);
     const [routes, setRoutes] = useState([]);
     const [markers, setMarkers] = useState([]);
+    const [markersToDisplay, setMarkersToDisplay] = useState([]);
     const [fall19Window, setFall19Window] = useState(false);
     const [fall19WindowPos, setFall19WindowPos] = useState({ lat: -25.363, lng: 131.044 });
     const [pctOneWindow, setPctOneWindow] = useState(false);
@@ -112,6 +113,7 @@ export default function Map() {
         fall21Close();
         setSelectedMarker(null);
     }
+    const yearMonthRegEx = /2\d{3}-[0-12]/;
 
     useEffect(() => {
         MarkerService.getMarkers().then(result => setMarkers(result));
@@ -131,13 +133,17 @@ export default function Map() {
         });
 
         if(map) {
-            if(checked['strava-activities']) {
+            if(checked.some(e => yearMonthRegEx.test(e))) {
                 map.data.setStyle( (feature) => {
                     var toDisplay = false;
-                    for(let monthDate of stravaDateArray) {
-                        if(dayjs(feature.getProperty('date')).isSame(monthDate, 'month')) {
-                         toDisplay = true;
-                            break;
+                    for(let yearMonthDate of checked) {
+                        if(yearMonthRegEx.test(yearMonthDate)) {
+                            var curDate = dayjs(feature.getProperty('date'));
+                            if(curDate.year() == yearMonthDate.substring(0, 4) && curDate.month() == yearMonthDate.substring(5))
+                            {
+                                toDisplay = true;
+                                break;
+                            }
                         }
                     }
                     
@@ -147,10 +153,27 @@ export default function Map() {
                         strokeOpacity: 0.8
                     }
                 });
+
+                //display markers that fit in selected dates
+                const updatedMarkersToDisplay = [];
+                for(let marker of markers) {
+                    var markerDate = dayjs(marker.activityDate);
+                    for(let yearMonthDate of checked) {
+                        if(yearMonthRegEx.test(yearMonthDate)) {
+                            if(markerDate.year() == yearMonthDate.substring(0, 4) && markerDate.month() == yearMonthDate.substring(5))
+                            {
+                                updatedMarkersToDisplay.push(marker);
+                            }
+                        }
+                    }
+                }
+                setMarkersToDisplay(updatedMarkersToDisplay);
+
             } else {
                 map.data.setStyle({
                     visible: false
                 });
+                setMarkersToDisplay([]);
             }
         }
 
@@ -168,13 +191,12 @@ export default function Map() {
         });
 
         mapRef.current=map;
-        console.log(checked);
     };
 
     return (
         <div>
             <h1 className="map-title">Summer of Jake</h1>
-            <Checklist checkboxValueList={checkboxValueList} checked={checked} setChecked={setChecked} expanded={expanded} setExpanded={setExpanded} checkboxBooleans={checkboxBooleans} map={mapRef.current} stravaDateArray={stravaDateArray} setStravaDateArray={setStravaDateArray}/>
+            <Checklist checkboxValueList={checkboxValueList} checked={checked} setChecked={setChecked} expanded={expanded} setExpanded={setExpanded} markersToDisplay={markersToDisplay} checkboxBooleans={checkboxBooleans} map={mapRef.current} markers={markers} setMarkersToDisplay={setMarkersToDisplay}/>
             <GoogleMap mapContainerStyle={mapContainerStyle} zoom={5} center={center} options={mapOptions} onClick={mapClick} onLoad={onMapLoad}>
                 <>
                 {
@@ -282,9 +304,7 @@ export default function Map() {
                         </InfoWindow>
                 }
                 {
-                    checked.includes('strava-activities')
-                    &&
-                    markers.map(marker => {
+                    markersToDisplay.map(marker => {
                         return <PhotoMarker key={`photoMarker-${marker.url}`} marker={marker} selectedMarker={selectedMarker} setSelectedMarker={setSelectedMarker} mapClick={mapClick} onChange={setSelectedMarker}/>;
                     })
                 }
