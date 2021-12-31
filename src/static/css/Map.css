@@ -52,3 +52,26 @@
 .strava-link {
     margin-top: 5px;
 }
+
+.nested-checklist {
+    margin-right: 5px;
+    padding: 0;
+}
+
+.nested-checklist-wrapper {
+    position: absolute;
+    width: fit-content;
+    top: 3rem;
+    right: 1rem;
+    z-index: 10;
+    max-width: 300px;
+    height: fit-content;
+    border: 2px solid rgb(134, 133, 133);
+    margin-top: 10px;
+    margin-right: 5px;
+    padding-right: 5px;
+    background: white;
+    text-align: left;
+    z-index: 9;
+    /* max-height: 100px; */
+  }

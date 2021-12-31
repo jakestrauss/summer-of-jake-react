@@ -53,12 +53,17 @@ export default function Checklist ({checked, setChecked, checkboxValueList, expa
         }
     }, [map, checked])
     return (
-        <CheckboxTree
-            nodes={checkboxValueList}
-            checked={checked}
-            expanded={expanded}
-            onCheck={currentChecked => {setChecked(currentChecked);}}
-            onExpand={currentExpanded => setExpanded(currentExpanded)}
-        />
+        <div className="nested-checklist-wrapper">
+            <span className="nested-checklist">
+            <CheckboxTree
+                nodes={checkboxValueList}
+                checked={checked}
+                expanded={expanded}
+                onCheck={currentChecked => {setChecked(currentChecked);}}
+                onExpand={currentExpanded => setExpanded(currentExpanded)}
+            />
+            </span>
+        </div>
+        
     );
 }
