@@ -7,10 +7,10 @@ import RouteURLService from '../services/RouteURLService';
 import MarkerService from '../services/MarkerService';
 import RouteInfoWindow from './RouteInfoWindow';
 import checkboxBooleans from '../static/checkboxBooleans';
-import initialStravaDateSet from '../static/initialStravaDateSet';
 import Checklist from './Checklist';
 import PhotoMarker from './PhotoMarker';
 import checkboxValueList from '../static/checkboxValueList';
+import summerOfJakeLogo from '../static/images/summer_of_jake_logo_yellow.png';
 
 const dayjs = require('dayjs');
 const isBetween = require('dayjs/plugin/isBetween');
@@ -48,7 +48,6 @@ export default function Map() {
     //State variables
     const [checked, setChecked] = useState(checkboxBooleans);
     const [expanded, setExpanded] = useState([]);
-    const [stravaDateArray, setStravaDateArray] = useState(initialStravaDateSet);
     const [selectedMarker, setSelectedMarker] = useState(null);
     const [routes, setRoutes] = useState([]);
     const [markers, setMarkers] = useState([]);
@@ -133,13 +132,14 @@ export default function Map() {
         });
 
         if(map) {
+            console.log(checked);
             if(checked.some(e => yearMonthRegEx.test(e))) {
                 map.data.setStyle( (feature) => {
                     var toDisplay = false;
                     for(let yearMonthDate of checked) {
                         if(yearMonthRegEx.test(yearMonthDate)) {
                             var curDate = dayjs(feature.getProperty('date'));
-                            if(curDate.year() == yearMonthDate.substring(0, 4) && curDate.month() == yearMonthDate.substring(5))
+                            if(curDate.year() == yearMonthDate.substring(0, 4) && curDate.month()+1 == yearMonthDate.substring(5))
                             {
                                 toDisplay = true;
                                 break;
@@ -160,7 +160,7 @@ export default function Map() {
                     var markerDate = dayjs(marker.activityDate);
                     for(let yearMonthDate of checked) {
                         if(yearMonthRegEx.test(yearMonthDate)) {
-                            if(markerDate.year() == yearMonthDate.substring(0, 4) && markerDate.month() == yearMonthDate.substring(5))
+                            if(markerDate.year() == yearMonthDate.substring(0, 4) && markerDate.month()+1 == yearMonthDate.substring(5))
                             {
                                 updatedMarkersToDisplay.push(marker);
                             }
@@ -195,7 +195,7 @@ export default function Map() {
 
     return (
         <div>
-            <h1 className="map-title">Summer of Jake</h1>
+            <img className="map-title" src={summerOfJakeLogo} />
             <Checklist checkboxValueList={checkboxValueList} checked={checked} setChecked={setChecked} expanded={expanded} setExpanded={setExpanded} markersToDisplay={markersToDisplay} checkboxBooleans={checkboxBooleans} map={mapRef.current} markers={markers} setMarkersToDisplay={setMarkersToDisplay}/>
             <GoogleMap mapContainerStyle={mapContainerStyle} zoom={5} center={center} options={mapOptions} onClick={mapClick} onLoad={onMapLoad}>
                 <>

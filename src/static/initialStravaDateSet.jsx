@@ -6,7 +6,7 @@ const now = dayjs();
 for(let i = 0; i < 6; i++) {
     const curTime = now.subtract(i, 'month');
     const year = curTime.year();
-    const month = curTime.month();
+    const month = curTime.month()+1;
     initialStravaDateSet.push(`${year}-${month}`);
 }
 

@@ -2,7 +2,7 @@ const dayjs = require('dayjs');
 
 const monthsShort = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const now = dayjs();
-const monthsSinceJan2020 = (now.year()-2020)*12 + now.month();
+const monthsSinceJan2020 = (now.year()-2020)*12 + now.month() + 1;
 const stravaYears = [];
 for(let i = 0; i < monthsSinceJan2020/12; i++) {
     const curMonths = [];
@@ -13,7 +13,7 @@ for(let i = 0; i < monthsSinceJan2020/12; i++) {
         monthsInYear = 12;
     } else {
         //in current year, take current month as most recent month
-        monthsInYear = (monthsSinceJan2020 % 12) + 1;
+        monthsInYear = (monthsSinceJan2020 % 12);
     }
 
     for(let j = 0; j < monthsInYear; j++) {

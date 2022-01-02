@@ -18,8 +18,8 @@
 .map-title {
     position: absolute;
     top: 1rem;
-    right: 2rem;
-    color: #281414;
+    left: 1rem;
+    max-width: 200px;
     z-index: 10;
     margin: 0;
     padding: 0;
@@ -53,16 +53,21 @@
     margin-top: 5px;
 }
 
-.nested-checklist {
-    margin-right: 5px;
-    padding: 0;
+.rct-icons-fa5 {
+    margin-right: 0px;
+    padding: 3px;
+}
+
+.rct-title {
+    font-weight: 550;
+    font-family: "Noto Sans", sans-serif;
 }
 
 .nested-checklist-wrapper {
     position: absolute;
     width: fit-content;
-    top: 3rem;
-    right: 1rem;
+    top: 0rem;
+    right: 0.5rem;
     z-index: 10;
     max-width: 300px;
     height: fit-content;
@@ -70,8 +75,11 @@
     margin-top: 10px;
     margin-right: 5px;
     padding-right: 5px;
-    background: white;
+    background: #F1ECEC;
     text-align: left;
-    z-index: 9;
-    /* max-height: 100px; */
+    border-radius: 15px;
   }
+
+.rct-node-icon {
+    display: none;
+}

@@ -1,12 +1,15 @@
 import CheckboxTree from 'react-checkbox-tree';
+import 'react-checkbox-tree/lib/react-checkbox-tree.css';
 import React, {useEffect, useState} from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 const dayjs = require('dayjs');
 const yearMonthRegEx = /2\d{3}-[0-12]/;
 
-export default function Checklist ({checked, setChecked, checkboxValueList, expanded, setExpanded, map, markers, markersToDisplay, setMarkersToDisplay}) {
+export default function Checklist ({checked, setChecked, checkboxValueList, expanded, setExpanded, map, markers, setMarkersToDisplay}) {
 
     useEffect(() => {
         if(map) {
+            console.log(checked);
             if(checked.some(e => yearMonthRegEx.test(e))) {
                 //display routes that fit in selected dates
                 map.data.setStyle( (feature) => {
@@ -14,7 +17,7 @@ export default function Checklist ({checked, setChecked, checkboxValueList, expa
                     for(let yearMonthDate of checked) {
                         if(yearMonthRegEx.test(yearMonthDate)) {
                             var curDate = dayjs(feature.getProperty('date'));
-                            if(curDate.year() == yearMonthDate.substring(0, 4) && curDate.month() == yearMonthDate.substring(5))
+                            if(curDate.year() == yearMonthDate.substring(0, 4) && curDate.month()+1 == yearMonthDate.substring(5))
                             {
                                 toDisplay = true;
                                 break;
@@ -35,7 +38,7 @@ export default function Checklist ({checked, setChecked, checkboxValueList, expa
                     var markerDate = dayjs(marker.activityDate);
                     for(let yearMonthDate of checked) {
                         if(yearMonthRegEx.test(yearMonthDate)) {
-                            if(markerDate.year() == yearMonthDate.substring(0, 4) && markerDate.month() == yearMonthDate.substring(5))
+                            if(markerDate.year() == yearMonthDate.substring(0, 4) && markerDate.month()+1 == yearMonthDate.substring(5))
                             {
                                 updatedMarkersToDisplay.push(marker);
                             }
@@ -54,15 +57,21 @@ export default function Checklist ({checked, setChecked, checkboxValueList, expa
     }, [map, checked])
     return (
         <div className="nested-checklist-wrapper">
-            <span className="nested-checklist">
-            <CheckboxTree
-                nodes={checkboxValueList}
-                checked={checked}
-                expanded={expanded}
-                onCheck={currentChecked => {setChecked(currentChecked);}}
-                onExpand={currentExpanded => setExpanded(currentExpanded)}
-            />
-            </span>
+                <CheckboxTree
+                    nodes={checkboxValueList}
+                    checked={checked}
+                    expanded={expanded}
+                    onCheck={currentChecked => {setChecked(currentChecked);}}
+                    onExpand={currentExpanded => setExpanded(currentExpanded)}
+                    iconsClass="fa5"
+                    icons={{
+                        check: <FontAwesomeIcon className="rct-icon rct-icon-check" icon={['far', 'check-square']} />,
+                        uncheck: <FontAwesomeIcon className="rct-icon rct-icon-uncheck" icon={['far', 'square']} />,
+                        halfCheck: <FontAwesomeIcon className="rct-icon rct-icon-half-check" icon={['far', 'minus-square']} />,
+                        expandClose: <FontAwesomeIcon className="rct-icon rct-icon-expand-close" icon="chevron-right" />,
+                        expandOpen: <FontAwesomeIcon className="rct-icon rct-icon-expand-open" icon="chevron-down" />,
+                    }}
+                />
         </div>
         
     );
