@@ -86,24 +86,18 @@
     background: #E2EDF0;
     text-align: left;
     border-radius: 15px;
-
-    @media (max-width: 700px) {
-        position: absolute;
-        width: fit-content;
-        top: 4rem;
-        right: 0.5rem;
-        z-index: 10;
-        max-width: 300px;
-        height: fit-content;
-        border: 2px solid rgb(134, 133, 133);
-        margin-top: 10px;
-        margin-right: 5px;
-        padding-right: 5px;
-        background: white;
-        text-align: left;
-        border-radius: 15px;
-    }
   }
+
+@media (max-width : 600px) {
+    .nested-checklist-wrapper {
+        max-width: 200px;
+    }
+
+    .map-title {
+        max-width: 125px;
+    }
+}
+
 
 .rct-node-icon {
     display: none;
