@@ -1,6 +1,7 @@
+/* eslint eqeqeq: "off" */
 import CheckboxTree from 'react-checkbox-tree';
 import 'react-checkbox-tree/lib/react-checkbox-tree.css';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 const dayjs = require('dayjs');
 const yearMonthRegEx = /2\d{3}-[0-12]/;
@@ -9,7 +10,6 @@ export default function Checklist ({checked, setChecked, checkboxValueList, expa
 
     useEffect(() => {
         if(map) {
-            console.log(checked);
             if(checked.some(e => yearMonthRegEx.test(e))) {
                 //display routes that fit in selected dates
                 map.data.setStyle( (feature) => {
@@ -54,6 +54,7 @@ export default function Checklist ({checked, setChecked, checkboxValueList, expa
                 setMarkersToDisplay([]);
             }
         }
+// eslint-disable-next-line react-hooks/exhaustive-deps
     }, [map, checked])
     return (
         <div className="nested-checklist-wrapper">
@@ -72,6 +73,7 @@ export default function Checklist ({checked, setChecked, checkboxValueList, expa
                         expandOpen: <FontAwesomeIcon className="rct-icon rct-icon-expand-open" icon="chevron-down" />,
                     }}
                 />
+                <h5 className="checklist-bottom-banner">Click routes on map for more info!</h5>
         </div>
         
     );

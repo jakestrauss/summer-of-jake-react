@@ -19,11 +19,19 @@
     position: absolute;
     top: 1rem;
     left: 1rem;
-    max-width: 200px;
+    max-width: 170px;
     z-index: 10;
     margin: 0;
     padding: 0;
-  }
+}
+
+.checklist-bottom-banner {
+    font-family: "Corbel", sans-serif;
+    z-index: 10;
+    margin: 0;
+    padding-left: 4px;
+    padding-bottom: 2px;
+}
 
 .kml-info-window-title {
     padding: 0;
@@ -59,14 +67,14 @@
 }
 
 .rct-title {
-    font-weight: 550;
-    font-family: "Noto Sans", sans-serif;
+    font-weight: 525;
+    font-family: "Corbel", sans-serif;
 }
 
 .nested-checklist-wrapper {
     position: absolute;
     width: fit-content;
-    top: 0rem;
+    top: 0.5rem;
     right: 0.5rem;
     z-index: 10;
     max-width: 300px;
@@ -75,7 +83,7 @@
     margin-top: 10px;
     margin-right: 5px;
     padding-right: 5px;
-    background: #F1ECEC;
+    background: #E2EDF0;
     text-align: left;
     border-radius: 15px;
   }

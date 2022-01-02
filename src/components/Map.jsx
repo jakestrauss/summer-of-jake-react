@@ -1,3 +1,4 @@
+/* eslint eqeqeq: "off" */
 import React, {useEffect, useState} from 'react';
 import { renderToString } from 'react-dom/server'
 import '../static/css/Map.css';
@@ -121,7 +122,7 @@ export default function Map() {
 
     if (loadError)
         return (<>Error loading maps</>);
-    if (!isLoaded || !routes || routes.length === 0)
+    if (!isLoaded || !routes || routes.length === 0 || !markers)
         return (<>Loading maps</>);
     
     const onMapLoad = (map) => {
@@ -132,7 +133,6 @@ export default function Map() {
         });
 
         if(map) {
-            console.log(checked);
             if(checked.some(e => yearMonthRegEx.test(e))) {
                 map.data.setStyle( (feature) => {
                     var toDisplay = false;
@@ -168,7 +168,6 @@ export default function Map() {
                     }
                 }
                 setMarkersToDisplay(updatedMarkersToDisplay);
-
             } else {
                 map.data.setStyle({
                     visible: false
@@ -195,7 +194,7 @@ export default function Map() {
 
     return (
         <div>
-            <img className="map-title" src={summerOfJakeLogo} />
+            <img className="map-title" alt="Summer of Jake" src={summerOfJakeLogo} />
             <Checklist checkboxValueList={checkboxValueList} checked={checked} setChecked={setChecked} expanded={expanded} setExpanded={setExpanded} markersToDisplay={markersToDisplay} checkboxBooleans={checkboxBooleans} map={mapRef.current} markers={markers} setMarkersToDisplay={setMarkersToDisplay}/>
             <GoogleMap mapContainerStyle={mapContainerStyle} zoom={5} center={center} options={mapOptions} onClick={mapClick} onLoad={onMapLoad}>
                 <>
