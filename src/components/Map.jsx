@@ -2,7 +2,7 @@
 import React, {useEffect, useState} from 'react';
 import { renderToString } from 'react-dom/server'
 import '../static/css/Map.css';
-import { GoogleMap, KmlLayer, InfoWindow, useJsApiLoader } from '@react-google-maps/api';
+import { GoogleMap, KmlLayer, InfoWindow, useJsApiLoader, Marker } from '@react-google-maps/api';
 import mapStyles from '../static/mapStyles';
 import RouteURLService from '../services/RouteURLService';
 import MarkerService from '../services/MarkerService';
@@ -26,6 +26,14 @@ const center = {
     lat: 38.614374,
     lng: -99.111854
 };
+const seattle = {
+    lat: 47.666355, 
+    lng: -122.320698
+}
+const chapelHill = {
+    lat: 35.899878,
+    lng: -79.043309
+}
 const mapOptions = {
     styles: mapStyles,
     disableDefaultUI: true,
@@ -122,7 +130,7 @@ export default function Map() {
 
     if (loadError)
         return (<>Error loading maps</>);
-    if (!isLoaded || !routes || routes.length === 0 || !markers)
+    if (!isLoaded || !routes || routes.length === 0 || markers.length === 0)
         return (<>Loading maps</>);
     
     const onMapLoad = (map) => {
@@ -198,6 +206,7 @@ export default function Map() {
             <Checklist checkboxValueList={checkboxValueList} checked={checked} setChecked={setChecked} expanded={expanded} setExpanded={setExpanded} markersToDisplay={markersToDisplay} checkboxBooleans={checkboxBooleans} map={mapRef.current} markers={markers} setMarkersToDisplay={setMarkersToDisplay}/>
             <GoogleMap mapContainerStyle={mapContainerStyle} zoom={5} center={center} options={mapOptions} onClick={mapClick} onLoad={onMapLoad}>
                 <>
+                {/* <Marker position={seattle}></Marker> */}
                 {
                     checked.includes('2019-summer')
                     &&

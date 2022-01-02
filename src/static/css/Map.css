@@ -98,6 +98,16 @@
     }
 }
 
+@media (max-width : 350px) {
+    .nested-checklist-wrapper {
+        max-width: 160px;
+    }
+
+    .map-title {
+        max-width: 110px;
+    }
+}
+
 
 .rct-node-icon {
     display: none;
