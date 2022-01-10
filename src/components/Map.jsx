@@ -12,6 +12,7 @@ import Checklist from './Checklist';
 import PhotoMarker from './PhotoMarker';
 import checkboxValueList from '../static/checkboxValueList';
 import summerOfJakeLogo from '../static/images/summer_of_jake_logo_yellow.png';
+import placeIconPng from '../static/images/location-pin-2.png';
 
 const dayjs = require('dayjs');
 const isBetween = require('dayjs/plugin/isBetween');
@@ -55,6 +56,7 @@ export default function Map() {
     });
 
     //State variables
+    const [placeIcon, setPlaceIcon] = useState({});
     const [checked, setChecked] = useState(checkboxBooleans);
     const [expanded, setExpanded] = useState([]);
     const [selectedMarker, setSelectedMarker] = useState(null);
@@ -135,6 +137,10 @@ export default function Map() {
     
     const onMapLoad = (map) => {
         const infowindow = new window.google.maps.InfoWindow({});
+        setPlaceIcon({
+            url: placeIconPng,
+            scaledSize: new window.google.maps.Size(40, 40)
+        });
 
         routes.map(route => {
             return map.data.loadGeoJson(route.url);
@@ -213,7 +219,8 @@ export default function Map() {
             fall21Window={fall21Window} setFall21Window={setFall21Window} setFall21WindowPos={setFall21WindowPos}/>
             <GoogleMap mapContainerStyle={mapContainerStyle} zoom={5} center={center} options={mapOptions} onClick={mapClick} onLoad={onMapLoad}>
                 <>
-                {/* <Marker position={seattle}></Marker> */}
+                {/* { <Marker position={seattle} icon={placeIcon}></Marker> }
+                { <Marker position={chapelHill} icon={placeIcon}></Marker> } */}
                 {
                     checked.includes('2019-summer')
                     &&
@@ -298,7 +305,7 @@ export default function Map() {
                         <div>
                             <h2 className="kml-info-window-title">Eastbound and Down: The Summer of Jake begins</h2>
                             <p className="kml-info-window-body">On March 1st 2021, I quit my job at Amazon and started driving back east to leave my car and life belongings at my parents' house for the
-                            duration of my PCT thru-hike. Along the way I was able to fit in some skiing, kayaking, desert exploration, and was able to catch up with some old friends.</p>
+                            duration of my PCT thru-hike. Along the way I was able to fit in some skiing, kayaking, desert exploration, and caught up with some old friends.</p>
                         </div>
                         </InfoWindow>
                 }
