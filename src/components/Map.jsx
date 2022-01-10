@@ -203,7 +203,14 @@ export default function Map() {
     return (
         <div>
             <img className="map-title" alt="Summer of Jake" src={summerOfJakeLogo} />
-            <Checklist checkboxValueList={checkboxValueList} checked={checked} setChecked={setChecked} expanded={expanded} setExpanded={setExpanded} markersToDisplay={markersToDisplay} checkboxBooleans={checkboxBooleans} map={mapRef.current} markers={markers} setMarkersToDisplay={setMarkersToDisplay}/>
+            <Checklist checkboxValueList={checkboxValueList} checked={checked} setChecked={setChecked} expanded={expanded} setExpanded={setExpanded} 
+            markersToDisplay={markersToDisplay} checkboxBooleans={checkboxBooleans} 
+            map={mapRef.current} markers={markers} setMarkersToDisplay={setMarkersToDisplay}
+            mapClick={mapClick} fall19Window={fall19Window} setFall19Window={setFall19Window} setFall19WindowPos={setFall19WindowPos}
+            pctOneWindow={pctOneWindow} setPctOneWindow={setPctOneWindow} setPctOneWindowPos={setPctOneWindowPos}
+            trtWindow={trtWindow} setTrtWindow={setTrtWindow} setTrtWindowPos={setTrtWindowPos}
+            spring21Window={spring21Window} setSpring21Window={setSpring21Window} setSpring21WindowPos={setSpring21WindowPos}
+            fall21Window={fall21Window} setFall21Window={setFall21Window} setFall21WindowPos={setFall21WindowPos}/>
             <GoogleMap mapContainerStyle={mapContainerStyle} zoom={5} center={center} options={mapOptions} onClick={mapClick} onLoad={onMapLoad}>
                 <>
                 {/* <Marker position={seattle}></Marker> */}

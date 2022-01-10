@@ -6,7 +6,98 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 const dayjs = require('dayjs');
 const yearMonthRegEx = /2\d{3}-[0-12]/;
 
-export default function Checklist ({checked, setChecked, checkboxValueList, expanded, setExpanded, map, markers, setMarkersToDisplay}) {
+export default function Checklist ({checked, setChecked, checkboxValueList, expanded, setExpanded, map, markers, setMarkersToDisplay, 
+    mapClick, fall19Window, setFall19Window, setFall19WindowPos, pctOneWindow, setPctOneWindow, setPctOneWindowPos,
+    trtWindow, setTrtWindow, setTrtWindowPos, spring21Window, setSpring21Window, setSpring21WindowPos, 
+    fall21Window, setFall21Window, setFall21WindowPos}) {
+
+    const handleTargetNode = (targetNode, currentChecked = checked) => {
+        if(currentChecked.includes(targetNode.value)) {
+            switch(targetNode.value) {
+                case '2019-summer':
+                    if(!fall19Window) {
+                        mapClick();
+                        setFall19Window(true);
+                        setFall19WindowPos({
+                            lat: 38.5458,
+                            lng: -106.9253
+                        });
+                    }
+                    break; 
+                case 'pct':
+                    if(!pctOneWindow) {
+                        mapClick();
+                        setPctOneWindow(true);
+                        setPctOneWindowPos({
+                            lat: 36.023601, 
+                            lng: -118.133888
+                        });
+                    }
+                    break;
+                case 'trt':
+                    if(!trtWindow) {
+                        mapClick();
+                        setTrtWindow(true);
+                        setTrtWindowPos({
+                            lat: 39.310182, 
+                            lng: -119.899595
+                        });
+                    }
+                    break;
+                case '2021-spring':
+                    if(!spring21Window) {
+                        mapClick();
+                        setSpring21Window(true);
+                        setSpring21WindowPos({
+                            lat: 41.216609, 
+                            lng: -112.002672
+                        });
+                    }
+                    break;
+                case '2021-fall':
+                    if(!fall21Window) {
+                        mapClick();
+                        setFall21Window(true);
+                        setFall21WindowPos({
+                            lat: 42.856419, 
+                            lng: -106.330937
+                        });
+                    }
+                    break;
+                
+                    
+            }
+        } else {
+            switch(targetNode.value) {
+                case '2019-summer':
+                    if(fall19Window) {
+                        setFall19Window(false);
+                    }
+                    break;
+                case 'pct':
+                    if(pctOneWindow) {
+                        setPctOneWindow(false);
+                    }
+                    break;
+                case '2021-spring':
+                    if(spring21Window) {
+                        setSpring21Window(false);
+                    }
+                    break;
+                case '2021-fall':
+                    if(fall21Window) {
+                        setFall21Window(false);
+                    }
+                    break;
+                case 'trt':
+                    if(trtWindow) {
+                        setTrtWindow(false);
+                    }
+                    break;
+            }
+        }
+        
+    }
 
     useEffect(() => {
         if(map) {
@@ -62,7 +153,15 @@ export default function Checklist ({checked, setChecked, checkboxValueList, expa
                     nodes={checkboxValueList}
                     checked={checked}
                     expanded={expanded}
-                    onCheck={currentChecked => {setChecked(currentChecked);}}
+                    onCheck={(currentChecked, targetNode) => {
+                        setChecked(currentChecked); 
+                        handleTargetNode(targetNode, currentChecked);
+                    }}
+                    onClick={targetNode => {
+                        handleTargetNode(targetNode);
+                        //setChecked(checked.rm)
+                    }}
+                    expandOnClick={true}
                     onExpand={currentExpanded => setExpanded(currentExpanded)}
                     iconsClass="fa5"
                     icons={{
