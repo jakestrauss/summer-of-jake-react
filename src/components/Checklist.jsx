@@ -64,6 +64,8 @@ export default function Checklist ({checked, setChecked, checkboxValueList, expa
                         });
                     }
                     break;
+                default:
+                    break;
                 
                     
             }
@@ -93,6 +95,8 @@ export default function Checklist ({checked, setChecked, checkboxValueList, expa
                     if(trtWindow) {
                         setTrtWindow(false);
                     }
+                    break;
+                default:
                     break;
             }
         }

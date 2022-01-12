@@ -13,6 +13,8 @@ import PhotoMarker from './PhotoMarker';
 import checkboxValueList from '../static/checkboxValueList';
 import summerOfJakeLogo from '../static/images/summer_of_jake_logo_yellow.png';
 import placeIconPng from '../static/images/location-pin-2.png';
+import trtImages from '../static/slideshow_images/trtImages';
+import PhotoSlideshow from './PhotoSlideshow';
 
 const dayjs = require('dayjs');
 const isBetween = require('dayjs/plugin/isBetween');
@@ -56,10 +58,11 @@ export default function Map() {
     });
 
     //State variables
-    const [placeIcon, setPlaceIcon] = useState({});
+    const [placeIcon, setPlaceIcon] = useState({ url: placeIconPng });
     const [checked, setChecked] = useState(checkboxBooleans);
     const [expanded, setExpanded] = useState([]);
     const [selectedMarker, setSelectedMarker] = useState(null);
+    const [selectedPlace, setSelectedPlace] = useState(null);
     const [routes, setRoutes] = useState([]);
     const [markers, setMarkers] = useState([]);
     const [markersToDisplay, setMarkersToDisplay] = useState([]);
@@ -139,7 +142,7 @@ export default function Map() {
         const infowindow = new window.google.maps.InfoWindow({});
         setPlaceIcon({
             url: placeIconPng,
-            scaledSize: new window.google.maps.Size(40, 40)
+            scaledSize: new window.google.maps.Size(35, 35)
         });
 
         routes.map(route => {
@@ -219,8 +222,37 @@ export default function Map() {
             fall21Window={fall21Window} setFall21Window={setFall21Window} setFall21WindowPos={setFall21WindowPos}/>
             <GoogleMap mapContainerStyle={mapContainerStyle} zoom={5} center={center} options={mapOptions} onClick={mapClick} onLoad={onMapLoad}>
                 <>
-                {/* { <Marker position={seattle} icon={placeIcon}></Marker> }
-                { <Marker position={chapelHill} icon={placeIcon}></Marker> } */}
+                { <Marker position={seattle} icon={placeIcon} onClick={() => {mapClick(); setSelectedPlace(seattle);}}></Marker> }
+                {
+                    selectedPlace === seattle
+                    && <InfoWindow key={seattle} visible={false} position={seattle} onCloseClick={() => {setSelectedPlace(null)}}>
+                        <div>
+                            <h2 className="kml-info-window-title">Seattle</h2>
+                            <p className="kml-info-window-body">In Seattle I worked a lot, and tried to explore even more. This video just about sums it up--and probably gives you a little more than you asked for when coming to this site...</p>
+                            <div class="iframe-container" position="relative" width="100%" height="100%" padding-bottom="56.25%">
+                                <iframe src="https://www.youtube.com/embed/vibJt_kYSnI" position="absolute" top="0" left="0" width="100%" height="100%" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen>
+                                </iframe>
+                            </div>
+                        </div>
+
+                    </InfoWindow>
+                }
+                { <Marker position={chapelHill} icon={placeIcon} onClick={() => {mapClick(); setSelectedPlace(chapelHill);}}></Marker> }
+                {
+                    selectedPlace === chapelHill
+                    && <InfoWindow key={chapelHill} visible={false} position={chapelHill} onCloseClick={() => {setSelectedPlace(null)}}>
+                        <div>
+                            <h2 className="kml-info-window-title">The college years: Chapel Thrill</h2>
+                            <p className="kml-info-window-body">Ah, college. A carefree time where I learned a good bit and had a good bit more of fun. Here's a mediocre edit of some vertical iPhone 5 footage after UNC won the
+                            men's basketball national championship in 2017. Note the rimless glasses, the pinnacle of style in April 2017. All rights to Kanye, please don't sue me.</p>
+                            <div class="iframe-container" position="relative" width="100%" height="100%" padding-bottom="56.25%">
+                                <iframe src="https://www.youtube.com/embed/9TQ9TG2tb8w" position="absolute" top="0" left="0" width="100%" height="100%" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen>
+                                </iframe>
+                            </div>
+                        </div>
+
+                    </InfoWindow>
+                }
                 {
                     checked.includes('2019-summer')
                     &&
@@ -231,7 +263,7 @@ export default function Map() {
                         && <InfoWindow key={`fall19InfoWindow`} visible={false} onCloseClick={fall19Close} options={kmlInfoWindowOptions} position={fall19WindowPos}>
                             <div>
                                 <h2 className="kml-info-window-title">2019 Road Trip: The Long Way to Seattle</h2>
-                                <p className="kml-info-window-body">The summer after I graduated college, I lived out of my Rav4 for 3 months and took my sweet time moving out to Seattle to start my first "real" job.</p>
+                                <p className="kml-info-window-body">The summer after I graduated college, I lived out of my Rav4 for 3 months and took my sweet time moving out to Seattle to start my first "real" job. The time of my life :)</p>
                                 <div className="iframe-container" position="relative" width="100%" height="100%" padding-bottom="56.25%">
                                     <iframe src="https://www.youtube.com/embed/1ZjSy4kVV0w" position="absolute" top="0" left="0" width="100%" height="100%" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen>
                                     </iframe>
@@ -287,9 +319,13 @@ export default function Map() {
                 {
                     trtWindow
                     && <InfoWindow key={`trtInfoWindow`} visible={false} onCloseClick={trtClose} options={kmlInfoWindowOptions} position={trtWindowPos}>
-                        <div>
-                            <h2 className="kml-info-window-title">Trial run: Quick Lap around a Lake</h2>
-                            <p className="kml-info-window-body">During my 2019 road trip, I decided to try out my first small solo thru-hike by circumnavigating Lake Tahoe on the 170-mile Tahoe Rim Trail.</p>
+                        <div> 
+                            <div>
+                                <h2 className="kml-info-window-title">Trial run: Quick Lap around a Lake</h2>
+                                <p className="kml-info-window-body">During my 2019 road trip, I decided to try out my first small solo thru-hike by circumnavigating Lake Tahoe on the 170-mile Tahoe Rim Trail. It went...poorly. But I finished, 
+                                saw enough beautiful scenery and learned enough about backpacking along the way, that it piqued my interest for a longer hike in the future.</p>
+                            </div>
+                            <PhotoSlideshow images={trtImages}/>
                         </div>
                         </InfoWindow>
                 }

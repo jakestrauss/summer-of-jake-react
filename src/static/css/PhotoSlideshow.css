@@ -1,0 +1,10 @@
+
+.each-slide > div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: top;
+    height: 300px;
+}
