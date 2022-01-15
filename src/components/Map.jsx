@@ -12,8 +12,12 @@ import Checklist from './Checklist';
 import PhotoMarker from './PhotoMarker';
 import checkboxValueList from '../static/checkboxValueList';
 import summerOfJakeLogo from '../static/images/summer_of_jake_logo_yellow.png';
-import placeIconPng from '../static/images/location-pin-2.png';
+import placeIconPng from '../static/images/marker-512-red.png';
+import currentPlaceIconPng from '../static/images/marker-512-yellow.png';
 import trtImages from '../static/slideshow_images/trtImages';
+import spring21Images from '../static/slideshow_images/spring21Images';
+import fall21Images from '../static/slideshow_images/fall21Images';
+import bendImages from '../static/slideshow_images/bendImages';
 import PhotoSlideshow from './PhotoSlideshow';
 
 const dayjs = require('dayjs');
@@ -37,6 +41,10 @@ const chapelHill = {
     lat: 35.899878,
     lng: -79.043309
 }
+const bend = {
+    lat: 44.0582, 
+    lng: -121.3153
+}
 const mapOptions = {
     styles: mapStyles,
     disableDefaultUI: true,
@@ -59,6 +67,7 @@ export default function Map() {
 
     //State variables
     const [placeIcon, setPlaceIcon] = useState({ url: placeIconPng });
+    const [currentPlaceIcon, setCurrentPlaceIcon] = useState({ url: currentPlaceIconPng });
     const [checked, setChecked] = useState(checkboxBooleans);
     const [expanded, setExpanded] = useState([]);
     const [selectedMarker, setSelectedMarker] = useState(null);
@@ -125,6 +134,7 @@ export default function Map() {
         spring21Close();
         fall21Close();
         setSelectedMarker(null);
+        setSelectedPlace(null);
     }
     const yearMonthRegEx = /2\d{3}-[0-12]/;
 
@@ -144,6 +154,11 @@ export default function Map() {
             url: placeIconPng,
             scaledSize: new window.google.maps.Size(35, 35)
         });
+        setCurrentPlaceIcon({
+            url: currentPlaceIconPng,
+            scaledSize: new window.google.maps.Size(35, 35)
+        });
+
 
         routes.map(route => {
             return map.data.loadGeoJson(route.url);
@@ -219,17 +234,22 @@ export default function Map() {
             pctOneWindow={pctOneWindow} setPctOneWindow={setPctOneWindow} setPctOneWindowPos={setPctOneWindowPos}
             trtWindow={trtWindow} setTrtWindow={setTrtWindow} setTrtWindowPos={setTrtWindowPos}
             spring21Window={spring21Window} setSpring21Window={setSpring21Window} setSpring21WindowPos={setSpring21WindowPos}
-            fall21Window={fall21Window} setFall21Window={setFall21Window} setFall21WindowPos={setFall21WindowPos}/>
+            fall21Window={fall21Window} setFall21Window={setFall21Window} setFall21WindowPos={setFall21WindowPos}
+            setSelectedPlace={setSelectedPlace} selectedPlace={selectedPlace} chapelHill={chapelHill} bend={bend} seattle={seattle}/>
             <GoogleMap mapContainerStyle={mapContainerStyle} zoom={5} center={center} options={mapOptions} onClick={mapClick} onLoad={onMapLoad}>
                 <>
-                { <Marker position={seattle} icon={placeIcon} onClick={() => {mapClick(); setSelectedPlace(seattle);}}></Marker> }
+                { 
+                    checked.includes('seattle')
+                    &&
+                    <Marker position={seattle} icon={placeIcon} onClick={() => {mapClick(); setSelectedPlace(seattle);}}></Marker> 
+                }
                 {
                     selectedPlace === seattle
                     && <InfoWindow key={seattle} visible={false} position={seattle} onCloseClick={() => {setSelectedPlace(null)}}>
                         <div>
                             <h2 className="kml-info-window-title">Seattle</h2>
                             <p className="kml-info-window-body">In Seattle I worked a lot, and tried to explore even more. This video just about sums it up--and probably gives you a little more than you asked for when coming to this site...</p>
-                            <div class="iframe-container" position="relative" width="100%" height="100%" padding-bottom="56.25%">
+                            <div className="iframe-container" position="relative" width="100%" height="100%" padding-bottom="56.25%">
                                 <iframe src="https://www.youtube.com/embed/vibJt_kYSnI" position="absolute" top="0" left="0" width="100%" height="100%" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen>
                                 </iframe>
                             </div>
@@ -237,7 +257,11 @@ export default function Map() {
 
                     </InfoWindow>
                 }
-                { <Marker position={chapelHill} icon={placeIcon} onClick={() => {mapClick(); setSelectedPlace(chapelHill);}}></Marker> }
+                { 
+                     checked.includes('chapel-hill')
+                     &&
+                    <Marker position={chapelHill} icon={placeIcon} onClick={() => {mapClick(); setSelectedPlace(chapelHill);}}></Marker> 
+                }
                 {
                     selectedPlace === chapelHill
                     && <InfoWindow key={chapelHill} visible={false} position={chapelHill} onCloseClick={() => {setSelectedPlace(null)}}>
@@ -245,12 +269,29 @@ export default function Map() {
                             <h2 className="kml-info-window-title">The college years: Chapel Thrill</h2>
                             <p className="kml-info-window-body">Ah, college. A carefree time where I learned a good bit and had a good bit more of fun. Here's a mediocre edit of some vertical iPhone 5 footage after UNC won the
                             men's basketball national championship in 2017. Note the rimless glasses, the pinnacle of style in April 2017. All rights to Kanye, please don't sue me.</p>
-                            <div class="iframe-container" position="relative" width="100%" height="100%" padding-bottom="56.25%">
+                            <div className="iframe-container" position="relative" width="100%" height="100%" padding-bottom="56.25%">
                                 <iframe src="https://www.youtube.com/embed/9TQ9TG2tb8w" position="absolute" top="0" left="0" width="100%" height="100%" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen>
                                 </iframe>
                             </div>
                         </div>
 
+                    </InfoWindow>
+                }
+                { 
+                    checked.includes('bend')
+                    &&
+                    <Marker position={bend} icon={currentPlaceIcon} onClick={() => {mapClick(); setSelectedPlace(bend);}}></Marker> }
+                {
+                    selectedPlace === bend
+                    && 
+                    <InfoWindow key={bend} visible={false} position={bend} onCloseClick={() => {setSelectedPlace(null)}}>
+                        <div>
+                            <div>
+                                <h2 className="kml-info-window-title">Currently: Bend, Oregon</h2>
+                                <p className="kml-info-window-body">Bend sucks, don't move here!</p>
+                            </div>
+                            <PhotoSlideshow images={bendImages}/>
+                        </div>
                     </InfoWindow>
                 }
                 {
@@ -283,7 +324,7 @@ export default function Map() {
                         <div>
                             <h2 className="kml-info-window-title">A Slower Method of Travel: 2021 Thru Hike of the Pacific Crest Trail</h2>
                             <p className="kml-info-window-body">After quitting my corporate job in Seattle in March, I spent mid-April to September on the adventure of a lifetime hiking from Mexico to Canada.</p>
-                            <div class="iframe-container" position="relative" width="100%" height="100%" padding-bottom="56.25%">
+                            <div className="iframe-container" position="relative" width="100%" height="100%" padding-bottom="56.25%">
                                 <iframe src="https://www.youtube.com/embed/7RJZMheYyFI" position="absolute" top="0" left="0" width="100%" height="100%" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen>
                                 </iframe>
                             </div>
@@ -302,7 +343,7 @@ export default function Map() {
                         <div>
                             <h2 className="kml-info-window-title">A Slower Method of Travel: 2021 Thru Hike of the Pacific Crest Trail</h2>
                             <p className="kml-info-window-body">After quitting my corporate job in Seattle in March, I spent mid-April to September on the adventure of a lifetime hiking from Mexico to Canada.</p>
-                            <div class="iframe-container" position="relative" width="100%" height="100%" padding-bottom="56.25%">
+                            <div className="iframe-container" position="relative" width="100%" height="100%" padding-bottom="56.25%">
                                 <iframe src="https://www.youtube.com/embed/7RJZMheYyFI" position="absolute" top="0" left="0" width="100%" height="100%" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen>
                                 </iframe>
                             </div>
@@ -339,9 +380,12 @@ export default function Map() {
                     spring21Window
                     && <InfoWindow key={`spring21Window`} visible={false} onCloseClick={spring21Close} options={kmlInfoWindowOptions} position={spring21WindowPos}>
                         <div>
-                            <h2 className="kml-info-window-title">Eastbound and Down: The Summer of Jake begins</h2>
-                            <p className="kml-info-window-body">On March 1st 2021, I quit my job at Amazon and started driving back east to leave my car and life belongings at my parents' house for the
-                            duration of my PCT thru-hike. Along the way I was able to fit in some skiing, kayaking, desert exploration, and caught up with some old friends.</p>
+                            <div>
+                                <h2 className="kml-info-window-title">Eastbound and Down: The Summer of Jake begins</h2>
+                                <p className="kml-info-window-body">On March 1st 2021, I quit my job at Amazon and started driving back east to leave my car and life belongings at my parents' house for the
+                                duration of my PCT thru-hike. Along the way I was able to fit in some skiing, kayaking, desert exploration, and caught up with some old friends.</p>
+                            </div>
+                            <PhotoSlideshow images={spring21Images}/>
                         </div>
                         </InfoWindow>
                 }
@@ -355,9 +399,12 @@ export default function Map() {
                     fall21Window
                     && <InfoWindow key={`fall21Window`} visible={false} onCloseClick={fall21Close} options={kmlInfoWindowOptions} position={fall21WindowPos}>
                         <div>
-                            <h2 className="kml-info-window-title">Westward Again: The Oregon Trail</h2>
-                            <p className="kml-info-window-body">After completing the Pacific Crest Trail, I decided to move to Bend, OR to ski bum it for the winter.
-                            In October 2021 I set out west to begin the newest chapter of my life while checking out the I-90 highlights on the way.</p>
+                            <div>
+                                <h2 className="kml-info-window-title">Westward Again: The Oregon Trail</h2>
+                                <p className="kml-info-window-body">After completing the Pacific Crest Trail, I decided to move to Bend, OR to ski bum it for the winter.
+                                In October 2021 I set out west to begin the newest chapter of my life while checking out the I-90 highlights on the way.</p>
+                            </div>
+                            <PhotoSlideshow images={fall21Images}/>
                         </div>
                         </InfoWindow>
                 }

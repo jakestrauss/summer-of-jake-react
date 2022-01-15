@@ -49,6 +49,15 @@ const checkboxValueList = [
         ],
     },
     {
+        value: 'places',
+        label: 'Places',
+        children: [
+            { value: 'chapel-hill', label: 'Chapel Hill' },
+            { value: 'seattle', label: 'Seattle' },
+            { value: 'bend', label: 'Bend' }
+        ]
+    },
+    {
         value: 'strava-activities',
         label: 'Strava Activities',
         children: stravaYears

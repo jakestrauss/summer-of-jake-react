@@ -5,6 +5,9 @@ const hardCodedOptions = [
         '2021-fall',
         'pct',
         'trt',
+        'bend',
+        'chapel-hill',
+        'seattle'
 ];
 const checkboxBooleans = hardCodedOptions.concat(initialStravaDateSet);
 

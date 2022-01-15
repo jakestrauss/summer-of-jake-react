@@ -7,7 +7,7 @@ import '../static/css/PhotoSlideshow.css';
 export default function PhotoSlideshow(images) {
     return (
         <div>
-          <Slide easing="ease" autoplay={false}>
+          <Slide easing="ease" transitionDuration={600} autoplay={false}>
             {
                 images.images.map(image => {
                     return <PhotoSlide key={image} image={image}/>;

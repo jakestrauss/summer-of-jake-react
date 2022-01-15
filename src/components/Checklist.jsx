@@ -9,7 +9,8 @@ const yearMonthRegEx = /2\d{3}-[0-12]/;
 export default function Checklist ({checked, setChecked, checkboxValueList, expanded, setExpanded, map, markers, setMarkersToDisplay, 
     mapClick, fall19Window, setFall19Window, setFall19WindowPos, pctOneWindow, setPctOneWindow, setPctOneWindowPos,
     trtWindow, setTrtWindow, setTrtWindowPos, spring21Window, setSpring21Window, setSpring21WindowPos, 
-    fall21Window, setFall21Window, setFall21WindowPos}) {
+    fall21Window, setFall21Window, setFall21WindowPos,
+    selectedPlace, setSelectedPlace, seattle, bend, chapelHill}) {
 
     const handleTargetNode = (targetNode, currentChecked = checked) => {
         if(currentChecked.includes(targetNode.value)) {
@@ -64,6 +65,24 @@ export default function Checklist ({checked, setChecked, checkboxValueList, expa
                         });
                     }
                     break;
+                case 'chapel-hill':
+                    if(selectedPlace === null) {
+                        mapClick();
+                        setSelectedPlace(chapelHill);
+                    }
+                break;
+                case 'seattle':
+                    if(selectedPlace === null) {
+                        mapClick();
+                        setSelectedPlace(seattle);
+                    }
+                break;
+                case 'bend':
+                    if(selectedPlace === null) {
+                        mapClick();
+                        setSelectedPlace(bend);
+                    }
+                break;
                 default:
                     break;
                 
@@ -96,6 +115,11 @@ export default function Checklist ({checked, setChecked, checkboxValueList, expa
                         setTrtWindow(false);
                     }
                     break;
+                case 'bend':
+                case 'chapel-hill':
+                case 'seattle':
+                    setSelectedPlace(null);
+                break;
                 default:
                     break;
             }
@@ -158,12 +182,11 @@ export default function Checklist ({checked, setChecked, checkboxValueList, expa
                     checked={checked}
                     expanded={expanded}
                     onCheck={(currentChecked, targetNode) => {
-                        setChecked(currentChecked); 
+                        setChecked(currentChecked);
                         handleTargetNode(targetNode, currentChecked);
                     }}
                     onClick={targetNode => {
                         handleTargetNode(targetNode);
-                        //setChecked(checked.rm)
                     }}
                     expandOnClick={true}
                     onExpand={currentExpanded => setExpanded(currentExpanded)}
