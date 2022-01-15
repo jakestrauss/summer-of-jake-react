@@ -8,3 +8,7 @@
     background-position: top;
     height: 300px;
 }
+
+.slideshow-container {
+    max-width: 350px;
+}

@@ -6,7 +6,7 @@ import '../static/css/PhotoSlideshow.css';
 
 export default function PhotoSlideshow(images) {
     return (
-        <div>
+        <div className="slideshow-container">
           <Slide easing="ease" transitionDuration={600} autoplay={false}>
             {
                 images.images.map(image => {
