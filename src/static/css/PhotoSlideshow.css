@@ -12,3 +12,9 @@
 .slideshow-container {
     max-width: 370px;
 }
+
+@media (max-width : 600px) {
+    .each-slide > div {
+        height: 170px;
+    }
+}
