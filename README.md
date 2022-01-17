@@ -1,49 +1,21 @@
-Summer of Jake adventure map
+# Summer of Jake adventure map front end
 
-# Getting Started with Create React App
+This repo hosts the React code to summerofjake.com. Its main functions are to call the back-end server to retrieve strava route and photo marker data, and reference other staticly stored data on a Google Cloud bucket to display in an interactive manner on a map using the Google Maps Javascript API.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+As of now, this is a personal project so I will not include detailed instructions on how to contribute to future development.
 
-## Available Scripts
+# Personal Notes
 
-In the project directory, you can run:
+## Running locally
+`npm run start` to hit prod server endpoint (https://www.summerofjakebackend.link:443)
+`npm run start:dev` to hit local dev server endpoint (http://localhost:8080)
 
-### `yarn start`
+## Website infrastructure
+* EC2 server (runs ‘server’ spring application and database-job as scheduled cron): https://console.aws.amazon.com/ec2/v2/home?region=us-east-1#InstanceDetails:instanceId=i-064f11c98fabf4bac 
+* MySQL database: https://console.aws.amazon.com/rds/home?region=us-east-1#database:id=summer-of-jake-db-2;is-cluster=false
+* Cloud bucket (strava kmls, pictures, uploaded geojsons): https://console.cloud.google.com/storage/browser?referrer=search&project=summer-of-jake-adventure-map&prefix=
+* Code pipeline: https://console.aws.amazon.com/codesuite/codepipeline/pipelines/summer-of-jake-backend-pipeline/view?region=us-east-1
+* Code deploy: https://console.aws.amazon.com/codesuite/codedeploy/applications/summer-of-jake-website?region=us-east-1
+* AWS Amplify: https://console.aws.amazon.com/amplify/home?region=us-east-1#/d36vgv5ul1f93o
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
-
-### `yarn test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `yarn build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-# summer-of-jake-react
+* Google Maps Javascript API: https://developers.google.com/maps/documentation/javascript/datalayer
