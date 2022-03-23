@@ -1,4 +1,5 @@
 # Summer of Jake adventure map front end
+# Project currently offline due to high infra costs, will come back later to refactor infrastructure when I have more time :)
 
 This repo hosts the React code to summerofjake.com. Its main functions are to call the back-end server to retrieve strava route and photo marker data, and reference other staticly stored data on a Google Cloud bucket to display in an interactive manner on a map using the Google Maps Javascript API.
 
